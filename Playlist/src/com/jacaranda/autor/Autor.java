@@ -8,23 +8,37 @@ public class Autor {
 	private String nombreArtistico;
 	private String codigo;
 	private boolean verificado;
-	public Autor(String nombre, String nombreArtistico, boolean verificado) {
+
+	public Autor(String nombre, String nombreArtistico, boolean verificado) throws AutorException {
 		super();
-		this.nombre = nombre;
-		this.nombreArtistico = nombreArtistico;
-		this.verificado = verificado;
+		setNombre(nombre);
+		setNombreArtistico(nombreArtistico);
+		setVerificado(verificado);
 		setCodigo();
 	}
-	
+
 	private void setCodigo() {
-		String resultado=this.nombre.substring(0,3)+this.nombreArtistico.substring(0,3);
-		this.codigo=resultado;
+		this.codigo= this.nombre.substring(0, 3) + this.nombreArtistico.substring(0, 3);
 	}
 
 	@Override
 	public String toString() {
 		return "Autor [nombre=" + nombre + ", nombreArtistico=" + nombreArtistico + ", codigo=" + codigo
 				+ ", verificado=" + verificado + "]";
+	}
+
+	public void setNombreArtistico(String nombreArtistico) throws AutorException {
+		if (nombreArtistico == null) {
+			throw new AutorException("El nombre no puede estar vacio");
+		}
+		this.nombreArtistico = nombreArtistico;
+	}
+
+	private void setNombre(String nombre) throws AutorException {
+		if (nombre == null) {
+			throw new AutorException("El nombre no puede estar vacio");
+		}
+		this.nombre = nombre;
 	}
 
 	public boolean isVerificado() {
@@ -59,5 +73,5 @@ public class Autor {
 		Autor other = (Autor) obj;
 		return Objects.equals(codigo, other.codigo);
 	}
-	
+
 }
