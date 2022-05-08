@@ -18,25 +18,35 @@ public class Autor {
 	}
 
 	private void setCodigo() {
-		this.codigo= this.nombre.substring(0, 3) + this.nombreArtistico.substring(0, 3);
+		this.codigo = this.nombre.substring(0, 3) + this.nombreArtistico.substring(0, 3);
 	}
 
 	@Override
 	public String toString() {
-		return "Autor [nombre=" + nombre + ", nombreArtistico=" + nombreArtistico + ", codigo=" + codigo
-				+ ", verificado=" + verificado + "]";
+		String cadena = "No es un autor verificado.";
+		if (verificado == true) {
+			cadena = "Es un autor verificado.";
+		}
+		return "AUTOR:" + "\n" + "Nombre: " + nombre + "\n" + "Nombre artistico: " + nombreArtistico + "\n"
+				+ "Codigo del autor: " + codigo + "\n" + cadena;
 	}
 
 	public void setNombreArtistico(String nombreArtistico) throws AutorException {
-		if (nombreArtistico == null) {
+		if (nombreArtistico.equals("")) {
 			throw new AutorException("El nombre no puede estar vacio");
+		}
+		if (nombreArtistico.length() < 3) {
+			throw new AutorException("El nombre artistico del autor debe tener más de 3 caracteres");
 		}
 		this.nombreArtistico = nombreArtistico;
 	}
 
 	private void setNombre(String nombre) throws AutorException {
-		if (nombre == null) {
+		if (nombre.equals("")) {
 			throw new AutorException("El nombre no puede estar vacio");
+		}
+		if (nombre.length() < 3) {
+			throw new AutorException("El nombre del autor debe tener más de 3 caracteres");
 		}
 		this.nombre = nombre;
 	}

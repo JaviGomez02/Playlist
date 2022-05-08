@@ -19,8 +19,8 @@ public class Podcast extends Reproduccion {
 	}
 
 	public void setTema(String tema) throws ReproduccionException {
-		if (tema == null) {
-			throw new ReproduccionException("El tema no puede ser nulo");
+		if (tema.equals("")) {
+			throw new ReproduccionException("El tema no puede estar vacio");
 		}
 		this.tema = tema;
 	}
@@ -30,6 +30,6 @@ public class Podcast extends Reproduccion {
 		return "PODCAST" + "\n" + "Titulo: " + super.getTitulo() + "\n" + "Autor: " + super.getAutor().toString() + "\n"
 				+ "Numero de reproducciones: " + super.getReproducciones() + "\n" + "Duracion: " + super.getDuracion()
 				+ "\n" + "Tema: " + this.getTema() + "\n" + "Codigo: " + super.getCodigo();
-		
+
 	}
 }

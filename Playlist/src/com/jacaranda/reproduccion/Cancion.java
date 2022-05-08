@@ -31,8 +31,8 @@ public class Cancion extends Reproduccion {
 	}
 
 	private void setGenero(String genero) throws ReproduccionException {
-		if (genero == null) {
-			throw new ReproduccionException("El genero no puede ser nulo");
+		if (genero.equals("")) {
+			throw new ReproduccionException("El genero no puede estar vacio");
 		}
 		this.genero = genero;
 	}
@@ -44,7 +44,5 @@ public class Cancion extends Reproduccion {
 				+ "\n" + "Puntuacion: " + this.getPuntuacion() + "/10" + "\n" + "Genero: " + this.getGenero() + "\n"
 				+ "Codigo: " + super.getCodigo();
 	}
-
-	
 
 }
