@@ -1,5 +1,10 @@
 package com.jacaranda.main;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,184 +22,202 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		System.out.println(mostrarBienvenida(leerCadena("Introduce tu nombre: ")));
-		try {
-			Playlist p = new Playlist(leerCadena("Introduce el nombre que le darias a tu PlayList: "));
-			System.out.println(mostrarMenu());
-			int opcion;
-			Set<Autor> autores = new HashSet<>();
-			boolean salir = false;
-			while (!salir) {
-				opcion = leerEntero("Introduce la opcion que deseas realizar: ");
+		System.out.println("1. Acceder a la base de datos.\n2. Acceder a la aplicacion\nPulse otra tecla para salir");
+		int opcionInicial = leerEntero("Introduce la opcion: ");
+		if (opcionInicial == 1) {
+			try {
+				Connection conexion = DriverManager
+						.getConnection("jdbc:oracle:thin:@//localhost:1521/ORCLCDB.localdomain", "dummy", "dummy");
 
-				switch (opcion) {
-				case 1: {
-					String nombre = leerCadena("Introduce el nombre del autor: ");
-					String nombreArtistico = leerCadena("Introduce el nombre artistico del autor: ");
-					char charVerificado = leerCaracter("¿Es un autor verificado? Introduce S/N: ");
-					boolean verificado = false;
-					if (charVerificado == 'S') {
-						verificado = true;
-					}
-					autores.add(new Autor(nombre, nombreArtistico, verificado));
-					System.out.println("Autor annadido correctamente." + "\n");
-					break;
-				}
-				case 2: {
-					StringBuilder cadenaAutores = new StringBuilder("AUTORES: " + "\n");
-					Iterator<Autor> iterador = autores.iterator();
-					while (iterador.hasNext()) {
-						Autor a = iterador.next();
-						cadenaAutores.append(a.getNombre() + "\n");
-
-					}
-					System.out.println(cadenaAutores.toString());
-					break;
-				}
-				case 3: {
-					String nombre = leerCadena("Introduce el nombre del autor del que quieres ver la informacion: ");
-					String cadena = "Autor no encontrado.";
-					boolean encontrado = false;
-					Iterator<Autor> iterador = autores.iterator();
-					while (iterador.hasNext() && !encontrado) {
-						Autor a = iterador.next();
-						if (a.getNombre().equalsIgnoreCase(nombre)) {
-							cadena = a.toString();
-							encontrado = true;
-						}
-
-					}
-					System.out.println(cadena);
-
-					break;
-				}
-				case 4: {
-					String titulo = leerCadena("Introduce el titulo de la cancion: ");
-					int reproducciones = leerEntero("Introduce el numero de reproducciones: ");
-					System.out.println("¿Cuanto dura la cancion?");
-					int minutos = leerEntero("Minutos: ");
-					int segundos = leerEntero("Segundos: ");
-					int horas = 0;
-					while (segundos >= 60) {
-						segundos -= 60;
-						minutos++;
-					}
-					while (minutos >= 60) {
-						minutos -= 60;
-						horas++;
-					}
-					int puntuacion = leerEntero("Introduce la puntuacion de la cancion. (1/10)");
-					String genero = leerCadena("Introduce el genero de la cancion: ");
-					String nombre = leerCadena(
-							"Introduce el nombre del autor(El autor tiene que estar registrado anteriormente): ");
-					boolean encontrado = false;
-					Autor autor = null;
-					Iterator<Autor> iterador = autores.iterator();
-					while (iterador.hasNext() && !encontrado) {
-						Autor a = iterador.next();
-						if (a.getNombre().equalsIgnoreCase(nombre)) {
-							encontrado = true;
-							autor = a;
-						}
-
-					}
-					if (encontrado) {
-						p.annadirCancion(titulo, reproducciones, LocalTime.of(horas, minutos, segundos), autor,
-								puntuacion, genero);
-						System.out.println("Cancion annadida");
-					} else {
-						System.out.println("Autor no encontrado, cancion no annadida");
-					}
-
-					break;
-				}
-				case 5: {
-					String titulo = leerCadena("Introduce el titulo del PodCast: ");
-					int reproducciones = leerEntero("Introduce el numero de reproducciones: ");
-					System.out.println("¿Cuanto dura el PodCast?");
-					int minutos = leerEntero("Minutos: ");
-					int segundos = leerEntero("Segundos: ");
-					int horas = 0;
-					while (segundos >= 60) {
-						segundos -= 60;
-						minutos++;
-					}
-					while (minutos >= 60) {
-						minutos -= 60;
-						horas++;
-					}
-					String tema = leerCadena("Introduce el tema del PodCast: ");
-					String nombre = leerCadena(
-							"Introduce el nombre del autor(El autor tiene que estar registrado anteriormente): ");
-					boolean encontrado = false;
-					Autor autor = null;
-					Iterator<Autor> iterador = autores.iterator();
-					while (iterador.hasNext() && !encontrado) {
-						Autor a = iterador.next();
-						if (a.getNombre().equalsIgnoreCase(nombre)) {
-							encontrado = true;
-							autor = a;
-						}
-
-					}
-					if (encontrado) {
-						p.annadirPodcast(titulo, reproducciones, LocalTime.of(horas, minutos, segundos), autor, tema);
-						System.out.println("PodCast annadido");
-					} else {
-						System.out.println("Autor no encontrado, PodCast no annadido.");
-					}
-
-					break;
-
-				}
-				case 6: {
-					System.out.println(p.mostrarPlaylist());
-					break;
-				}
-				case 7: {
-					System.out.println(p.reproducirReproduccioAleatoria());
-					break;
-				}
-				case 8: {
-					String titulo = leerCadena("Introduce el titulo de la cancion a escuchar: ");
-					System.out.println("\n" + p.reproducirReproduccion(titulo));
-
-					break;
-				}
-				case 9: {
-					p.ordenarPlaylist();
-					System.out.println("PlayList ordenada correctamente.");
-					break;
-				}
-				case 10: {
-					System.out.println(p.toString());
-					break;
-				}
-				case 11: {
-					String titulo = leerCadena("Introduce el titulo de la reproduccion para ver su informacion: ");
-					System.out.println(p.mostrarReproduccion(titulo));
-					break;
-				}
-
-				case 12: {
-					salir = true;
-					System.out.println("Saliendo...");
-					break;
-				}
-				default:
-					System.out.println("Introduce una opcion entre 1 y 7");
-				}
-
+				annadir(conexion);
+				consulta(conexion);
+			} catch (SQLException e1) {
+				System.out.println(e1.getMessage());
 			}
-		} catch (PlaylistException | AutorException e) {
-			System.out.println(e.getMessage());
-		}
+		} else if (opcionInicial == 2) {
 
+			System.out.println(mostrarBienvenida(leerCadena("Introduce tu nombre: ")));
+			try {
+				Playlist p = new Playlist(leerCadena("Introduce el nombre que le darias a tu PlayList: "));
+				System.out.println(mostrarMenu());
+				int opcion;
+				Set<Autor> autores = new HashSet<>();
+				boolean salir = false;
+				while (!salir) {
+					opcion = leerEntero("Introduce la opcion que deseas realizar: ");
+
+					switch (opcion) {
+					case 1: {
+						String nombre = leerCadena("Introduce el nombre del autor: ");
+						String nombreArtistico = leerCadena("Introduce el nombre artistico del autor: ");
+						char charVerificado = leerCaracter("Es un autor verificado? Introduce S/N: ");
+						boolean verificado = false;
+						if (charVerificado == 'S') {
+							verificado = true;
+						}
+						autores.add(new Autor(nombre, nombreArtistico, verificado));
+						System.out.println("Autor annadido correctamente." + "\n");
+						break;
+					}
+					case 2: {
+						StringBuilder cadenaAutores = new StringBuilder("AUTORES: " + "\n");
+						Iterator<Autor> iterador = autores.iterator();
+						while (iterador.hasNext()) {
+							Autor a = iterador.next();
+							cadenaAutores.append(a.getNombre() + "\n");
+
+						}
+						System.out.println(cadenaAutores.toString());
+						break;
+					}
+					case 3: {
+						String nombre = leerCadena(
+								"Introduce el nombre del autor del que quieres ver la informacion: ");
+						String cadena = "Autor no encontrado.";
+						boolean encontrado = false;
+						Iterator<Autor> iterador = autores.iterator();
+						while (iterador.hasNext() && !encontrado) {
+							Autor a = iterador.next();
+							if (a.getNombre().equalsIgnoreCase(nombre)) {
+								cadena = a.toString();
+								encontrado = true;
+							}
+
+						}
+						System.out.println(cadena);
+
+						break;
+					}
+					case 4: {
+						String titulo = leerCadena("Introduce el titulo de la cancion: ");
+						int reproducciones = leerEntero("Introduce el numero de reproducciones: ");
+						System.out.println("Cuanto dura la cancion?");
+						int minutos = leerEntero("Minutos: ");
+						int segundos = leerEntero("Segundos: ");
+						int horas = 0;
+						while (segundos >= 60) {
+							segundos -= 60;
+							minutos++;
+						}
+						while (minutos >= 60) {
+							minutos -= 60;
+							horas++;
+						}
+						int puntuacion = leerEntero("Introduce la puntuacion de la cancion. (1/10)");
+						String genero = leerCadena("Introduce el genero de la cancion: ");
+						String nombre = leerCadena(
+								"Introduce el nombre del autor(El autor tiene que estar registrado anteriormente): ");
+						boolean encontrado = false;
+						Autor autor = null;
+						Iterator<Autor> iterador = autores.iterator();
+						while (iterador.hasNext() && !encontrado) {
+							Autor a = iterador.next();
+							if (a.getNombre().equalsIgnoreCase(nombre)) {
+								encontrado = true;
+								autor = a;
+							}
+
+						}
+						if (encontrado) {
+							p.annadirCancion(titulo, reproducciones, LocalTime.of(horas, minutos, segundos), autor,
+									puntuacion, genero);
+							System.out.println("Cancion annadida");
+						} else {
+							System.out.println("Autor no encontrado, cancion no annadida");
+						}
+
+						break;
+					}
+					case 5: {
+						String titulo = leerCadena("Introduce el titulo del PodCast: ");
+						int reproducciones = leerEntero("Introduce el numero de reproducciones: ");
+						System.out.println("Cuanto dura el PodCast?");
+						int minutos = leerEntero("Minutos: ");
+						int segundos = leerEntero("Segundos: ");
+						int horas = 0;
+						while (segundos >= 60) {
+							segundos -= 60;
+							minutos++;
+						}
+						while (minutos >= 60) {
+							minutos -= 60;
+							horas++;
+						}
+						String tema = leerCadena("Introduce el tema del PodCast: ");
+						String nombre = leerCadena(
+								"Introduce el nombre del autor(El autor tiene que estar registrado anteriormente): ");
+						boolean encontrado = false;
+						Autor autor = null;
+						Iterator<Autor> iterador = autores.iterator();
+						while (iterador.hasNext() && !encontrado) {
+							Autor a = iterador.next();
+							if (a.getNombre().equalsIgnoreCase(nombre)) {
+								encontrado = true;
+								autor = a;
+							}
+
+						}
+						if (encontrado) {
+							p.annadirPodcast(titulo, reproducciones, LocalTime.of(horas, minutos, segundos), autor,
+									tema);
+							System.out.println("PodCast annadido");
+						} else {
+							System.out.println("Autor no encontrado, PodCast no annadido.");
+						}
+
+						break;
+
+					}
+					case 6: {
+						System.out.println(p.mostrarPlaylist());
+						break;
+					}
+					case 7: {
+						System.out.println(p.reproducirReproduccioAleatoria());
+						break;
+					}
+					case 8: {
+						String titulo = leerCadena("Introduce el titulo de la cancion a escuchar: ");
+						System.out.println("\n" + p.reproducirReproduccion(titulo));
+
+						break;
+					}
+					case 9: {
+						p.ordenarPlaylist();
+						System.out.println("PlayList ordenada correctamente.");
+						break;
+					}
+					case 10: {
+						System.out.println(p.toString());
+						break;
+					}
+					case 11: {
+						String titulo = leerCadena("Introduce el titulo de la reproduccion para ver su informacion: ");
+						System.out.println(p.mostrarReproduccion(titulo));
+						break;
+					}
+
+					case 12: {
+						salir = true;
+						System.out.println("Saliendo...");
+						break;
+					}
+					default:
+						System.out.println("Introduce una opcion entre 1 y 7");
+					}
+
+				}
+			} catch (PlaylistException | AutorException e) {
+				System.out.println(e.getMessage());
+			}
+		} else {
+			System.out.println("Saliendo...");
+		}
 	}
 
 	public static String mostrarBienvenida(String nombre) {
 		return "Buenas, " + nombre + ". Bienvenido/a a nuestra aplicacion de musica." + "\n"
-				+ "¿Que te parece si empezamos por crear nuestra Playlist?";
+				+ "Que te parece si empezamos por crear nuestra Playlist?";
 	}
 
 	public static String mostrarMenu() {
@@ -202,7 +225,7 @@ public class Main {
 				+ "3. Ver informacion de autor." + "\n" + "4. Annadir cancion a nuestra PlayList." + "\n"
 				+ "5. Annadir PodCast a nuestra PlayList." + "\n" + "6. Mostrar PlayList." + "\n"
 				+ "7. Reproducir aleatorio." + "\n" + "8. Reproducir cancion." + "\n"
-				+ "9. Ordenar PlayList(Se ordena por duracion)." + "\n" + "10. Mostrar información de la PlayList."
+				+ "9. Ordenar PlayList(Se ordena por duracion)." + "\n" + "10. Mostrar informacion de la PlayList."
 				+ "\n" + "11. Mostrar informacion de reproduccion" + "\n" + "12. Salir de la aplicacion.";
 	}
 
@@ -219,6 +242,55 @@ public class Main {
 	public static char leerCaracter(String texto) {
 		System.out.println(texto);
 		return teclado.nextLine().charAt(0);
+	}
+
+	public static void consulta(Connection conexion) {
+		try {
+
+			// Como hacer una consulta:
+
+			Statement instruccion = conexion.createStatement();
+			String query = "SELECT * FROM PERSONA";
+
+			ResultSet resultado = instruccion.executeQuery(query);
+
+			while (resultado.next()) {
+				System.out.println(resultado.getString("nombre"));
+				System.out.println(resultado.getString("apellidos"));
+				System.out.println(resultado.getString("dni"));
+				System.out.println("******************************************");
+
+			}
+
+			conexion.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void annadir(Connection conexion) {
+		try {
+			Statement instruccion = conexion.createStatement();
+			String nombre, apellidos, dni;
+
+			nombre = leerCadena("Introduce el nombre: ");
+			apellidos = leerCadena("Introduce el apellidos: ");
+			dni = leerCadena("Introduce el dni: ");
+
+			String query = "insert into persona values('" + nombre + "','" + apellidos + "','" + dni + "')";
+
+			if (instruccion.execute(query)) {
+				System.out.println("Error en la sentencia: " + query);
+			} else {
+				System.out.println("Registro insertado");
+			}
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		String query = "SELECT * FROM PERSONA";
+
 	}
 
 }
