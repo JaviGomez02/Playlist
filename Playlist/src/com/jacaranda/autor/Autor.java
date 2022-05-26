@@ -36,7 +36,7 @@ public class Autor {
 			throw new AutorException("El nombre no puede estar vacio");
 		}
 		if (nombreArtistico.length() < 3) {
-			throw new AutorException("El nombre artistico del autor debe tener más de 3 caracteres");
+			throw new AutorException("El nombre artistico del autor debe tener mï¿½s de 3 caracteres");
 		}
 		this.nombreArtistico = nombreArtistico;
 	}
@@ -46,7 +46,7 @@ public class Autor {
 			throw new AutorException("El nombre no puede estar vacio");
 		}
 		if (nombre.length() < 3) {
-			throw new AutorException("El nombre del autor debe tener más de 3 caracteres");
+			throw new AutorException("El nombre del autor debe tener mï¿½s de 3 caracteres");
 		}
 		this.nombre = nombre;
 	}
@@ -61,6 +61,10 @@ public class Autor {
 
 	public String getNombre() {
 		return nombre;
+	}
+
+	public String getCodigo() {
+		return codigo;
 	}
 
 	public String getNombreArtistico() {
